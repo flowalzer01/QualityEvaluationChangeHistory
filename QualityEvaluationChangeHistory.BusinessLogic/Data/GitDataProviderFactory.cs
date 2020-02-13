@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory.Data
+namespace QualityEvaluationChangeHistory.BusinessLogic.Data
 {
     public class GitDataProviderFactory
     {

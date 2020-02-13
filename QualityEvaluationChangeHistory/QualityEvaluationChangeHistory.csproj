@@ -9,11 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Combinatorics" Version="1.1.0.19" />
-    <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
-    <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
     <PackageReference Include="ScottPlot.WPF" Version="4.0.18" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QualityEvaluationChangeHistory.BusinessLogic\QualityEvaluationChangeHistory.BusinessLogic.csproj" />
+    <ProjectReference Include="..\QualityEvaluationChangeHistory.Model\QualityEvaluationChangeHistory.Model.csproj" />
   </ItemGroup>
 
 </Project>

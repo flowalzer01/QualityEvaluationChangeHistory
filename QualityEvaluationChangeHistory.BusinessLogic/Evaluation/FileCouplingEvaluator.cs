@@ -1,12 +1,12 @@
-﻿using QualityEvaluationChangeHistory.Model;
+﻿using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory.Evaluation
+namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
-    internal class FileCouplingEvaluator
+    public class FileCouplingEvaluator
     {
         private const int COMBINATION_SIZE = 2;
         private const int TOP_FILES_TO_LOOK_AT = 20;
@@ -40,7 +40,7 @@ namespace QualityEvaluationChangeHistory.Evaluation
                 .ToList();
         }
 
-        internal List<FileCouple> CalculateFileCouples()
+        public List<FileCouple> CalculateFileCouples()
         {
             List<FileCouple> fileCouples = new List<FileCouple>();
 

@@ -1,19 +1,16 @@
 ﻿using Combinatorics.Collections;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Documents;
 
-namespace QualityEvaluationChangeHistory.Evaluation
+namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
-    internal class CombinationEvaluator
+    public class CombinationEvaluator
     {
         public CombinationEvaluator()
         {
         }
 
 
-        internal IEnumerable<List<int>> GetCombinations(int elements, int combinationSize)
+        public IEnumerable<List<int>> GetCombinations(int elements, int combinationSize)
         {
             Combinations<int> combinations = new Combinations<int>(GetElements(elements), combinationSize);
 

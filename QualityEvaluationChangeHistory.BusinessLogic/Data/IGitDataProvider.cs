@@ -1,9 +1,9 @@
-﻿using QualityEvaluationChangeHistory.Model;
+﻿using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory.Data
+namespace QualityEvaluationChangeHistory.BusinessLogic.Data
 {
     public interface IGitDataProvider
     {

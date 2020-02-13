@@ -1,10 +1,10 @@
 ﻿using LibGit2Sharp;
-using QualityEvaluationChangeHistory.Model;
+using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QualityEvaluationChangeHistory.Data
+namespace QualityEvaluationChangeHistory.BusinessLogic.Data
 {
     public class GitDataRepositoryProvider : IGitDataProvider
     {

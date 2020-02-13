@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory.Model
+namespace QualityEvaluationChangeHistory.Model.Model
 {
     [DataContract]
     public class GitPatchEntryChange

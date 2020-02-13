@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory.Model
+namespace QualityEvaluationChangeHistory.Model.Model
 {
-    internal class FileCouple
+    public class FileCouple
     {
         public FileCouple()
         {
@@ -12,8 +12,7 @@ namespace QualityEvaluationChangeHistory.Model
             FileNames = new List<string>();
         }
 
-        internal List<string> GitCommits { get; set; }
-        internal List<string> FileNames { get; set; }
-
+        public List<string> GitCommits { get; set; }
+        public List<string> FileNames { get; set; }
     }
 }

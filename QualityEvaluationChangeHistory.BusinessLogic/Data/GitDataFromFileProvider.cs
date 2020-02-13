@@ -1,9 +1,8 @@
-﻿using System;
+﻿using QualityEvaluationChangeHistory.Model.Model;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using QualityEvaluationChangeHistory.Model;
 
-namespace QualityEvaluationChangeHistory.Data
+namespace QualityEvaluationChangeHistory.BusinessLogic.Data
 {
     public class GitDataFromFileProvider : IGitDataProvider
     {

@@ -1,14 +1,12 @@
-﻿using QualityEvaluationChangeHistory.Model;
-using System;
+﻿using QualityEvaluationChangeHistory.Model.Model;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace QualityEvaluationChangeHistory.Evaluation
+namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
-    internal class FileChangeFrequencyEvaluator
+    public class FileChangeFrequencyEvaluator
     {
-        internal List<FileChangeFrequency> GetFileChangeFrequencies(List<GitCommit> gitCommits)
+        public List<FileChangeFrequency> GetFileChangeFrequencies(List<GitCommit> gitCommits)
         {
             Dictionary<string, int> fileChangeFrequencyDictionary = new Dictionary<string, int>();
             List<FileChangeFrequency> fileChangeFrequencies = new List<FileChangeFrequency>();

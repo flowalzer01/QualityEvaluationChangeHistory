@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory.Model
+namespace QualityEvaluationChangeHistory.Model.Model
 {
     [DataContract]
     public class GitCommit
@@ -29,7 +29,7 @@ namespace QualityEvaluationChangeHistory.Model
         [DataMember]
         public List<GitPatchEntryChange> PatchEntryChanges { get; private set; }
 
-        internal bool ContainsFileNames(List<string> fileNames)
+        public bool ContainsFileNames(List<string> fileNames)
         {
             return IntersectFileNames(fileNames).Count() == fileNames.Count;
         }

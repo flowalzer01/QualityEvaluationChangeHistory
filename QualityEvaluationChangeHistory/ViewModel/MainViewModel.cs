@@ -1,12 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
-using QualityEvaluationChangeHistory.Data;
-using QualityEvaluationChangeHistory.Evaluation;
-using QualityEvaluationChangeHistory.Model;
+using QualityEvaluationChangeHistory.BusinessLogic.Data;
+using QualityEvaluationChangeHistory.BusinessLogic.Evaluation;
+using QualityEvaluationChangeHistory.Model.Model;
 using ScottPlot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace QualityEvaluationChangeHistory.ViewModel

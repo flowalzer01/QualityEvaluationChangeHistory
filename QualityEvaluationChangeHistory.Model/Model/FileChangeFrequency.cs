@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory.Model
+namespace QualityEvaluationChangeHistory.Model.Model
 {
-    internal class FileChangeFrequency
+    public class FileChangeFrequency
     {
         public FileChangeFrequency(string filePath, int fileChanges)
         {
@@ -12,7 +12,7 @@ namespace QualityEvaluationChangeHistory.Model
             FileChanges = fileChanges;
         }
 
-        internal string FilePath { get; private set; }
-        internal int FileChanges { get; private set; }
+        public string FilePath { get; private set; }
+        public int FileChanges { get; private set; }
     }
 }
