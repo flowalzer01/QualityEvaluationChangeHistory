@@ -1,40 +1,34 @@
-﻿using QualityEvaluationChangeHistory.Data;
+﻿using GalaSoft.MvvmLight;
+using QualityEvaluationChangeHistory.Data;
 using QualityEvaluationChangeHistory.Evaluation;
 using QualityEvaluationChangeHistory.Model;
+using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace QualityEvaluationChangeHistory
+namespace QualityEvaluationChangeHistory.ViewModel
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public class MainViewModel : ViewModelBase
     {
         private const bool DataFromRepository = true;
         private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\heidelpayJava";
         private const string GitDataPath = @"C:\Users\walzeflo\source\repos\heidelpayJava";
+        private WpfPlot _wpfPlot;
 
-        public MainWindow()
+        public MainViewModel()
         {
-            InitializeComponent();
-            List<GitCommit> gitCommits = GetCommits();
+
+        }
+
+        internal async Task Init(WpfPlot wpfPlot)
+        {
+            _wpfPlot = wpfPlot;
+            List<GitCommit> gitCommits = await Task.Run(() => GetCommits());
             List<FileChangeFrequency> fileChangeFrequencies = CalculateFileChangeFrequency(gitCommits);
             CalculateFileCoupling(gitCommits, fileChangeFrequencies);
-
             PlotGraph(fileChangeFrequencies);
         }
 
@@ -80,18 +74,19 @@ namespace QualityEvaluationChangeHistory
                 i++;
             }
 
-            wpfPlot1.plt.Title("File Change Frequency");
-            wpfPlot1.plt.Grid(false);
+            _wpfPlot.plt.Title("File Change Frequency");
+            _wpfPlot.plt.Grid(false);
 
             // customize barWidth and xOffset to squeeze grouped bars together
-            wpfPlot1.plt.PlotBar(Xs, fileChanges, barWidth: 2.0);
+            _wpfPlot.plt.PlotBar(Xs, fileChanges, barWidth: 2.0);
 
-            wpfPlot1.plt.Axis(null, null, 0, null);
-            wpfPlot1.plt.Legend();
+            _wpfPlot.plt.Axis(null, null, 0, null);
+            _wpfPlot.plt.Legend();
 
-            wpfPlot1.plt.XTicks(Xs, labels);
-            wpfPlot1.plt.Ticks(displayTickLabelsX: true);
-            wpfPlot1.Render();
+            _wpfPlot.plt.XTicks(Xs, labels);
+            _wpfPlot.plt.Ticks(displayTickLabelsX: true);
+            _wpfPlot.Render();
         }
+
     }
 }
