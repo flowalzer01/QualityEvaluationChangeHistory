@@ -11,9 +11,9 @@ namespace QualityEvaluationChangeHistory.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        private const bool DataFromRepository = true;
-        private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\heidelpayJava";
-        private const string GitDataPath = @"C:\Users\walzeflo\source\repos\heidelpayJava";
+        private const bool DataFromRepository = false;
+        private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\SAPApps\SapApps_Dsp";
+        private const string GitDataPath = @"C:\Users\walzeflo\source\repos\BachelorArbeit\DSP\repo.txt";
         private WpfPlot _wpfPlot;
 
         public MainViewModel()
@@ -25,9 +25,21 @@ namespace QualityEvaluationChangeHistory.ViewModel
         {
             _wpfPlot = wpfPlot;
             List<GitCommit> gitCommits = await Task.Run(() => GetCommits());
+
+            WriteCommitsToFileIfNeeded(gitCommits);
+
             List<FileChangeFrequency> fileChangeFrequencies = CalculateFileChangeFrequency(gitCommits);
             CalculateFileCoupling(gitCommits, fileChangeFrequencies);
             PlotGraph(fileChangeFrequencies);
+        }
+
+        private static void WriteCommitsToFileIfNeeded(List<GitCommit> gitCommits)
+        {
+            if (DataFromRepository)
+            {
+                GitDataToFileSaver gisDataToFileSaver = new GitDataToFileSaver();
+                gisDataToFileSaver.SaveCommitsToFile(gitCommits, GitDataPath);
+            }
         }
 
         private void CalculateFileCoupling(List<GitCommit> gitCommits, List<FileChangeFrequency> fileChangeFrequencies)

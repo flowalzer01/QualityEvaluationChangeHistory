@@ -9,6 +9,11 @@ namespace QualityEvaluationChangeHistory.Model.Model
     [DataContract]
     public class GitCommit
     {
+        public GitCommit()
+        {
+
+        }
+
         public GitCommit(string sha, string message, string author)
         {
             SHA = sha;
@@ -18,16 +23,16 @@ namespace QualityEvaluationChangeHistory.Model.Model
         }
 
         [DataMember]
-        public string Author { get; private set; }
+        public string Author { get; set; }
 
         [DataMember]
-        public string SHA { get; private set; }
+        public string SHA { get; set; }
 
         [DataMember]
-        public string Message { get; private set; }
+        public string Message { get; set; }
 
         [DataMember]
-        public List<GitPatchEntryChange> PatchEntryChanges { get; private set; }
+        public List<GitPatchEntryChange> PatchEntryChanges { get; set; }
 
         public bool ContainsFileNames(List<string> fileNames)
         {

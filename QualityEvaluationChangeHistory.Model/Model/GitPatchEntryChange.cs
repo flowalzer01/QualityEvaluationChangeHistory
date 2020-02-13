@@ -8,6 +8,11 @@ namespace QualityEvaluationChangeHistory.Model.Model
     [DataContract]
     public class GitPatchEntryChange
     {
+        public GitPatchEntryChange()
+        {
+
+        }
+
         public GitPatchEntryChange(string path, int linesAdded, int linesDeleted)
         {
             Path = path;
@@ -16,12 +21,12 @@ namespace QualityEvaluationChangeHistory.Model.Model
         }
 
         [DataMember]
-        public string Path { get; private set; }
+        public string Path { get; set; }
 
         [DataMember]
-        public int LinesAdded { get; private set; }
+        public int LinesAdded { get; set; }
 
         [DataMember]
-        public int LinesDeleted { get; private set; }
+        public int LinesDeleted { get; set; }
     }
 }

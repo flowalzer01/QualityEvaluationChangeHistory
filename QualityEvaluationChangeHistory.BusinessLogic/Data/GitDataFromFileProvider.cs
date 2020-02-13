@@ -1,21 +1,24 @@
 ﻿using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 
 namespace QualityEvaluationChangeHistory.BusinessLogic.Data
 {
     public class GitDataFromFileProvider : IGitDataProvider
     {
-        private string gitDataPath;
+        private string _gitDataPath;
 
         public GitDataFromFileProvider(string gitDataPath)
         {
-            this.gitDataPath = gitDataPath;
+            _gitDataPath = gitDataPath;
         }
 
         public List<GitCommit> GetCommits()
         {
-            throw new NotImplementedException();
+            string jsonString = File.ReadAllText(_gitDataPath);
+            return JsonSerializer.Deserialize<List<GitCommit>>(jsonString);
         }
     }
 }
