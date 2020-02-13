@@ -50,7 +50,7 @@ namespace QualityEvaluationChangeHistory.Data
 
         private List<Commit> GetCommitsInternal()
         {
-            return _repository.Commits.Take(6).ToList();
+            return _repository.Commits.ToList();
         }
     }
 }

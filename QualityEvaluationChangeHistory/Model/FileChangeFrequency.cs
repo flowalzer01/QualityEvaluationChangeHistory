@@ -6,7 +6,13 @@ namespace QualityEvaluationChangeHistory.Model
 {
     internal class FileChangeFrequency
     {
-        internal string FilePath { get; set; }
-        internal int FileChanges { get; set; }
+        public FileChangeFrequency(string filePath, int fileChanges)
+        {
+            FilePath = filePath;
+            FileChanges = fileChanges;
+        }
+
+        internal string FilePath { get; private set; }
+        internal int FileChanges { get; private set; }
     }
 }
