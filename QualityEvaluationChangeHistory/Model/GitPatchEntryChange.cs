@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace QualityEvaluationChangeHistory.Model
 {
-    internal class GitPatchEntryChange
+    [DataContract]
+    public class GitPatchEntryChange
     {
         public GitPatchEntryChange(string path, int linesAdded, int linesDeleted)
         {
@@ -13,8 +15,13 @@ namespace QualityEvaluationChangeHistory.Model
             LinesDeleted = linesDeleted;
         }
 
-        internal string Path { get; private set; }
-        internal int LinesAdded { get; private set; }
-        internal int LinesDeleted { get; private set; }
+        [DataMember]
+        public string Path { get; private set; }
+
+        [DataMember]
+        public int LinesAdded { get; private set; }
+
+        [DataMember]
+        public int LinesDeleted { get; private set; }
     }
 }

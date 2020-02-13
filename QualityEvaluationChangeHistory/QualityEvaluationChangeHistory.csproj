@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Combinatorics" Version="1.1.0.19" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="ScottPlot.WPF" Version="4.0.18" />
   </ItemGroup>

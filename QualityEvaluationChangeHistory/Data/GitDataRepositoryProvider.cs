@@ -6,16 +6,16 @@ using System.Linq;
 
 namespace QualityEvaluationChangeHistory.Data
 {
-    internal class GitDataProvider
+    public class GitDataRepositoryProvider : IGitDataProvider
     {
         private readonly Repository _repository;
 
-        public GitDataProvider(string repositoryPath)
+        public GitDataRepositoryProvider(string repositoryPath)
         {
             _repository = new Repository(repositoryPath);
         }
 
-        internal List<GitCommit> GetCommits()
+        public List<GitCommit> GetCommits()
         {
             List<Commit> commits = GetCommitsInternal();
             List<GitCommit> gitCommits = new List<GitCommit>();

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace QualityEvaluationChangeHistory.Model
 {
-    internal class GitCommit
+    [DataContract]
+    public class GitCommit
     {
         public GitCommit(string sha, string message, string author)
         {
@@ -14,9 +17,28 @@ namespace QualityEvaluationChangeHistory.Model
             PatchEntryChanges = new List<GitPatchEntryChange>();
         }
 
-        internal string Author { get; private set; }
-        internal string SHA { get; private set; }
-        internal string Message { get; private set; }
-        internal List<GitPatchEntryChange> PatchEntryChanges { get; private set; }
+        [DataMember]
+        public string Author { get; private set; }
+
+        [DataMember]
+        public string SHA { get; private set; }
+
+        [DataMember]
+        public string Message { get; private set; }
+
+        [DataMember]
+        public List<GitPatchEntryChange> PatchEntryChanges { get; private set; }
+
+        internal bool ContainsFileNames(List<string> fileNames)
+        {
+            return IntersectFileNames(fileNames).Count() == fileNames.Count;
+        }
+
+        private IEnumerable<string> IntersectFileNames(List<string> fileNames)
+        {
+            return PatchEntryChanges
+                .Select(x => x.Path)
+                .Intersect(fileNames);
+        }
     }
 }

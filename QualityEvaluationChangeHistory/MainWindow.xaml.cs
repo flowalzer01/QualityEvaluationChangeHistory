@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,19 +24,44 @@ namespace QualityEvaluationChangeHistory
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const bool DataFromRepository = true;
+        private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\heidelpayJava";
+        private const string GitDataPath = @"C:\Users\walzeflo\source\repos\heidelpayJava";
+
         public MainWindow()
         {
             InitializeComponent();
-            CalculateFileChangeFrequency();
+            List<GitCommit> gitCommits = GetCommits();
+            List<FileChangeFrequency> fileChangeFrequencies = CalculateFileChangeFrequency(gitCommits);
+            CalculateFileCoupling(gitCommits, fileChangeFrequencies);
+
+            PlotGraph(fileChangeFrequencies);
         }
 
-        private void CalculateFileChangeFrequency()
+        private void CalculateFileCoupling(List<GitCommit> gitCommits, List<FileChangeFrequency> fileChangeFrequencies)
         {
-            GitDataProvider gitDataProvider = new GitDataProvider(@"C:\Users\walzeflo\source\repos\heidelpayJava");
+            FileCouplingEvaluator fileCouplingEvaluator = new FileCouplingEvaluator(gitCommits, fileChangeFrequencies);
+            List<FileCouple> fileCouples = fileCouplingEvaluator
+                .CalculateFileCouples()
+                .OrderByDescending(x => x.GitCommits.Count)
+                .ToList();
+        }
+
+        private static List<GitCommit> GetCommits()
+        {
+            IGitDataProvider gitDataProvider = new GitDataProviderFactory(RepositoryPath, GitDataPath)
+                .GetGitDataProvider(DataFromRepository);
+
+            var commits = gitDataProvider.GetCommits();
+
+            return commits;
+        }
+
+        private List<FileChangeFrequency> CalculateFileChangeFrequency(List<GitCommit> gitCommits)
+        {
             FileChangeFrequencyEvaluator fileChangeFrequencyEvaluator = new FileChangeFrequencyEvaluator();
 
-            List<FileChangeFrequency> fileChangeFrequencies = fileChangeFrequencyEvaluator.GetFileChangeFrequencies(gitDataProvider.GetCommits());
-            PlotGraph(fileChangeFrequencies);
+            return fileChangeFrequencyEvaluator.GetFileChangeFrequencies(gitCommits);
         }
 
         private void PlotGraph(List<FileChangeFrequency> fileChangeFrequencies)
