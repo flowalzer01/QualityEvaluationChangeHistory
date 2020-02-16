@@ -3,6 +3,7 @@ using QualityEvaluationChangeHistory.BusinessLogic.Data;
 using QualityEvaluationChangeHistory.BusinessLogic.Evaluation;
 using QualityEvaluationChangeHistory.Model.Model;
 using ScottPlot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,21 +17,31 @@ namespace QualityEvaluationChangeHistory.ViewModel
         private const string GitDataPath = @"C:\Users\walzeflo\source\repos\BachelorArbeit\DSP\repo.txt";
         private WpfPlot _wpfPlot;
 
+
         public MainViewModel()
         {
 
         }
 
+        public List<FileChangeFrequency> FileChangeFrequencies { get; private set; }
+        public List<GitCommit> GitCommits { get; private set; }
+
         internal async Task Init(WpfPlot wpfPlot)
         {
             _wpfPlot = wpfPlot;
-            List<GitCommit> gitCommits = await Task.Run(() => GetCommits());
+            GitCommits = await Task.Run(() => GetCommits());
+            FileChangeFrequencies = CalculateFileChangeFrequency();
 
-            WriteCommitsToFileIfNeeded(gitCommits);
+            CalculateFileCoupling();
+            CalculateCyclomaticComplexity();
+            PlotGraph();
 
-            List<FileChangeFrequency> fileChangeFrequencies = CalculateFileChangeFrequency(gitCommits);
-            CalculateFileCoupling(gitCommits, fileChangeFrequencies);
-            PlotGraph(fileChangeFrequencies);
+            WriteCommitsToFileIfNeeded(GitCommits);
+        }
+
+        private void CalculateCyclomaticComplexity()
+        {
+
         }
 
         private static void WriteCommitsToFileIfNeeded(List<GitCommit> gitCommits)
@@ -42,9 +53,9 @@ namespace QualityEvaluationChangeHistory.ViewModel
             }
         }
 
-        private void CalculateFileCoupling(List<GitCommit> gitCommits, List<FileChangeFrequency> fileChangeFrequencies)
+        private void CalculateFileCoupling()
         {
-            FileCouplingEvaluator fileCouplingEvaluator = new FileCouplingEvaluator(gitCommits, fileChangeFrequencies);
+            FileCouplingEvaluator fileCouplingEvaluator = new FileCouplingEvaluator(GitCommits, FileChangeFrequencies);
             List<FileCouple> fileCouples = fileCouplingEvaluator
                 .CalculateFileCouples()
                 .OrderByDescending(x => x.GitCommits.Count)
@@ -61,22 +72,22 @@ namespace QualityEvaluationChangeHistory.ViewModel
             return commits;
         }
 
-        private List<FileChangeFrequency> CalculateFileChangeFrequency(List<GitCommit> gitCommits)
+        private List<FileChangeFrequency> CalculateFileChangeFrequency()
         {
             FileChangeFrequencyEvaluator fileChangeFrequencyEvaluator = new FileChangeFrequencyEvaluator();
 
-            return fileChangeFrequencyEvaluator.GetFileChangeFrequencies(gitCommits);
+            return fileChangeFrequencyEvaluator.GetFileChangeFrequencies(GitCommits);
         }
 
-        private void PlotGraph(List<FileChangeFrequency> fileChangeFrequencies)
+        private void PlotGraph()
         {
-            int pointCount = fileChangeFrequencies.Count;
+            int pointCount = FileChangeFrequencies.Count;
             double[] Xs = new double[pointCount];
             double[] fileChanges = new double[pointCount];
             string[] labels = new string[pointCount];
 
             int i = 0;
-            foreach (FileChangeFrequency fileChangeFrequency in fileChangeFrequencies)
+            foreach (FileChangeFrequency fileChangeFrequency in FileChangeFrequencies)
             {
                 Xs[i] = i;
                 fileChanges[i] = fileChangeFrequency.FileChanges;
@@ -96,6 +107,8 @@ namespace QualityEvaluationChangeHistory.ViewModel
             _wpfPlot.plt.XTicks(Xs, labels);
             _wpfPlot.plt.Ticks(displayTickLabelsX: true);
             _wpfPlot.Render();
+
+            RaisePropertyChanged(nameof(FileChangeFrequencies));
         }
 
     }

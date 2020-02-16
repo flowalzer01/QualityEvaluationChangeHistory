@@ -9,6 +9,21 @@
         DataContext="{Binding MainPageInstance, Source={StaticResource Locator}}"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <ScottPlot:WpfPlot Name="wpfPlot1"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        
+        <ScottPlot:WpfPlot Grid.Row="0" Name="wpfPlot1"/>
+
+        <ListView Grid.Row="1" Margin="10" Name="lvUsers" ItemsSource="{Binding FileChangeFrequencies}" ScrollViewer.CanContentScroll="True">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="File Pfad" DisplayMemberBinding="{Binding FilePath}" />
+                    <GridViewColumn Header="Änderungsfrequenz" DisplayMemberBinding="{Binding FileChanges}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
     </Grid>
 </Window>
