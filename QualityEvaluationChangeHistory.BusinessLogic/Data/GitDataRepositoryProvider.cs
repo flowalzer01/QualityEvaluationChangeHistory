@@ -2,13 +2,17 @@
 using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace QualityEvaluationChangeHistory.BusinessLogic.Data
 {
     public class GitDataRepositoryProvider : IGitDataProvider
     {
         private readonly Repository _repository;
+        private int _emptyFiles = 0;
+        private int _parsedFiles = 0;
 
         public GitDataRepositoryProvider(string repositoryPath)
         {
@@ -28,7 +32,7 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Data
                 Patch patch = _repository.Diff.Compare<Patch>(currentTree, previousTree);
 
                 Console.WriteLine($"{commits[i].MessageShort}");
-                GitCommit gitCommit = new GitCommit(commits[i].Sha, commits[i].MessageShort, commits[i].Author.Name);
+                GitCommit gitCommit = new GitCommit(commits[i].Sha, commits[i].MessageShort, commits[i].Author.Name, commits[i].Author.When);
 
                 foreach (PatchEntryChanges pec in patch)
                 {
@@ -38,7 +42,8 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Data
                         pec.LinesAdded,
                         pec.LinesDeleted);
 
-                    gitCommit.PatchEntryChanges.Add(new GitPatchEntryChange(pec.Path, pec.LinesAdded, pec.LinesDeleted));
+                    string fileContent = GetFileContent(commits[i], pec.Path);
+                    gitCommit.PatchEntryChanges.Add(new GitPatchEntryChange(pec.Path, pec.LinesAdded, pec.LinesDeleted, fileContent));
                 }
                 Console.WriteLine();
 
@@ -51,6 +56,29 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Data
         private List<Commit> GetCommitsInternal()
         {
             return _repository.Commits.ToList();
+        }
+
+        public string GetFileContent(Commit commit, string fileName)
+        {
+            _parsedFiles++;
+
+            TreeEntry treeEntry = commit[fileName];
+
+            if(treeEntry == null)
+            {
+                _emptyFiles++;
+                return string.Empty;
+            }
+
+            var blob = (Blob)treeEntry.Target;
+
+            var contentStream = blob.GetContentStream();
+
+            using (var tr = new StreamReader(contentStream, Encoding.UTF8))
+            {
+                string content = tr.ReadToEnd();
+                return content;
+            }
         }
     }
 }

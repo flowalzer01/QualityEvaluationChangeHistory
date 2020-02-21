@@ -13,11 +13,12 @@ namespace QualityEvaluationChangeHistory.Model.Model
 
         }
 
-        public GitPatchEntryChange(string path, int linesAdded, int linesDeleted)
+        public GitPatchEntryChange(string path, int linesAdded, int linesDeleted, string fileContent)
         {
             Path = path;
             LinesAdded = linesAdded;
             LinesDeleted = linesDeleted;
+            FileContent = fileContent;
         }
 
         [DataMember]
@@ -28,5 +29,8 @@ namespace QualityEvaluationChangeHistory.Model.Model
 
         [DataMember]
         public int LinesDeleted { get; set; }
+
+        [DataMember]
+        public string FileContent { get; set; }
     }
 }

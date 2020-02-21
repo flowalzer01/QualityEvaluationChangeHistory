@@ -5,9 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ArchiMetrics.Analysis" Version="2.1.0" />
     <PackageReference Include="Combinatorics" Version="1.1.0.19" />
     <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.4.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.4.0" />
   </ItemGroup>
 
   <ItemGroup>

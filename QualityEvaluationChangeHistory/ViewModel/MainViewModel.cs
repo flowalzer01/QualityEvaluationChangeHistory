@@ -12,8 +12,9 @@ namespace QualityEvaluationChangeHistory.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        private const bool DataFromRepository = false;
-        private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\SAPApps\SapApps_Dsp";
+        private const bool DataFromRepository = true;
+        //private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\SAPApps\SapApps_Dsp";
+        private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\heidelpayDotNET";
         private const string GitDataPath = @"C:\Users\walzeflo\source\repos\BachelorArbeit\DSP\repo.txt";
         private WpfPlot _wpfPlot;
 
@@ -32,16 +33,18 @@ namespace QualityEvaluationChangeHistory.ViewModel
             GitCommits = await Task.Run(() => GetCommits());
             FileChangeFrequencies = CalculateFileChangeFrequency();
 
+            CalculateFileMetricsOverTime();
             CalculateFileCoupling();
-            CalculateCyclomaticComplexity();
             PlotGraph();
 
             WriteCommitsToFileIfNeeded(GitCommits);
         }
 
-        private void CalculateCyclomaticComplexity()
+        private void CalculateFileMetricsOverTime()
         {
-
+            FileMetricOverTimeEvaluator fileMetricOverTimeEvaluator = new FileMetricOverTimeEvaluator();
+            FileMetricOverTime fileMetricOverTime = fileMetricOverTimeEvaluator
+                .GetFileMetricOverTime(GitCommits, FileChangeFrequencies.First().FilePath);
         }
 
         private static void WriteCommitsToFileIfNeeded(List<GitCommit> gitCommits)

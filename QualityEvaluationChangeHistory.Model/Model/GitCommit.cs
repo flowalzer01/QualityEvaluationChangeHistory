@@ -14,11 +14,12 @@ namespace QualityEvaluationChangeHistory.Model.Model
 
         }
 
-        public GitCommit(string sha, string message, string author)
+        public GitCommit(string sha, string message, string author, DateTimeOffset time)
         {
             SHA = sha;
             Message = message;
             Author = author;
+            Time = time.DateTime;
             PatchEntryChanges = new List<GitPatchEntryChange>();
         }
 
@@ -27,6 +28,9 @@ namespace QualityEvaluationChangeHistory.Model.Model
 
         [DataMember]
         public string SHA { get; set; }
+
+        [DataMember]
+        public DateTime Time { get; set; }
 
         [DataMember]
         public string Message { get; set; }
