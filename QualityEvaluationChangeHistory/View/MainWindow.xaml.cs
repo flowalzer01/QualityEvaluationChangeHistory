@@ -16,7 +16,7 @@ namespace QualityEvaluationChangeHistory
         {
             InitializeComponent();
             var vm = ServiceLocator.Current.GetInstance<MainViewModel>();
-            vm.Init(wpfPlot1).ConfigureAwait(false);
+            vm.Init().ConfigureAwait(false);
         }
     }
 }

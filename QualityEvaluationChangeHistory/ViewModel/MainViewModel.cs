@@ -2,7 +2,6 @@
 using QualityEvaluationChangeHistory.BusinessLogic.Data;
 using QualityEvaluationChangeHistory.BusinessLogic.Evaluation;
 using QualityEvaluationChangeHistory.Model.Model;
-using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,35 +15,43 @@ namespace QualityEvaluationChangeHistory.ViewModel
         //private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\SAPApps\SapApps_Dsp";
         private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\heidelpayDotNET";
         private const string GitDataPath = @"C:\Users\walzeflo\source\repos\BachelorArbeit\DSP\repo.txt";
-        private WpfPlot _wpfPlot;
-
 
         public MainViewModel()
         {
 
         }
 
+        public FileMetricOverTime FileMetricOverTime { get; private set; }
+        public ValuesOverTimeViewModel ValuesOverTimeViewModel { get; private set; }
         public List<FileChangeFrequency> FileChangeFrequencies { get; private set; }
         public List<GitCommit> GitCommits { get; private set; }
 
-        internal async Task Init(WpfPlot wpfPlot)
+        internal async Task Init()
         {
-            _wpfPlot = wpfPlot;
             GitCommits = await Task.Run(() => GetCommits());
             FileChangeFrequencies = CalculateFileChangeFrequency();
-
-            CalculateFileMetricsOverTime();
+            FileMetricOverTime = CalculateFileMetricsOverTime();
+            ValuesOverTimeViewModel = new ValuesOverTimeViewModel(FileMetricOverTime);
             CalculateFileCoupling();
-            PlotGraph();
 
             WriteCommitsToFileIfNeeded(GitCommits);
+
+            RefreshUi();
         }
 
-        private void CalculateFileMetricsOverTime()
+        private void RefreshUi()
+        {
+            RaisePropertyChanged(nameof(ValuesOverTimeViewModel));
+            RaisePropertyChanged(nameof(FileChangeFrequencies));
+        }
+
+        private FileMetricOverTime CalculateFileMetricsOverTime()
         {
             FileMetricOverTimeEvaluator fileMetricOverTimeEvaluator = new FileMetricOverTimeEvaluator();
             FileMetricOverTime fileMetricOverTime = fileMetricOverTimeEvaluator
                 .GetFileMetricOverTime(GitCommits, FileChangeFrequencies.First().FilePath);
+
+            return fileMetricOverTime;
         }
 
         private static void WriteCommitsToFileIfNeeded(List<GitCommit> gitCommits)
@@ -70,9 +77,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
             IGitDataProvider gitDataProvider = new GitDataProviderFactory(RepositoryPath, GitDataPath)
                 .GetGitDataProvider(DataFromRepository);
 
-            var commits = gitDataProvider.GetCommits();
-
-            return commits;
+            return gitDataProvider.GetCommits();
         }
 
         private List<FileChangeFrequency> CalculateFileChangeFrequency()
@@ -81,38 +86,5 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
             return fileChangeFrequencyEvaluator.GetFileChangeFrequencies(GitCommits);
         }
-
-        private void PlotGraph()
-        {
-            int pointCount = FileChangeFrequencies.Count;
-            double[] Xs = new double[pointCount];
-            double[] fileChanges = new double[pointCount];
-            string[] labels = new string[pointCount];
-
-            int i = 0;
-            foreach (FileChangeFrequency fileChangeFrequency in FileChangeFrequencies)
-            {
-                Xs[i] = i;
-                fileChanges[i] = fileChangeFrequency.FileChanges;
-                labels[i] = "Vla";
-                i++;
-            }
-
-            _wpfPlot.plt.Title("File Change Frequency");
-            _wpfPlot.plt.Grid(false);
-
-            // customize barWidth and xOffset to squeeze grouped bars together
-            _wpfPlot.plt.PlotBar(Xs, fileChanges, barWidth: 2.0);
-
-            _wpfPlot.plt.Axis(null, null, 0, null);
-            _wpfPlot.plt.Legend();
-
-            _wpfPlot.plt.XTicks(Xs, labels);
-            _wpfPlot.plt.Ticks(displayTickLabelsX: true);
-            _wpfPlot.Render();
-
-            RaisePropertyChanged(nameof(FileChangeFrequencies));
-        }
-
     }
 }
