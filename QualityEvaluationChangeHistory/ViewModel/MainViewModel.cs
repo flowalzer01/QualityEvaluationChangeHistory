@@ -23,6 +23,8 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         public FileMetricOverTime FileMetricOverTime { get; private set; }
         public ValuesOverTimeViewModel ValuesOverTimeViewModel { get; private set; }
+        public ColumnChartViewModel ColumnChartViewModel { get; private set; }
+
         public List<FileChangeFrequency> FileChangeFrequencies { get; private set; }
         public List<GitCommit> GitCommits { get; private set; }
 
@@ -32,6 +34,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
             FileChangeFrequencies = CalculateFileChangeFrequency();
             FileMetricOverTime = CalculateFileMetricsOverTime();
             ValuesOverTimeViewModel = new ValuesOverTimeViewModel(FileMetricOverTime);
+            ColumnChartViewModel = new ColumnChartViewModel(FileChangeFrequencies);
             CalculateFileCoupling();
 
             WriteCommitsToFileIfNeeded(GitCommits);
@@ -42,6 +45,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
         private void RefreshUi()
         {
             RaisePropertyChanged(nameof(ValuesOverTimeViewModel));
+            RaisePropertyChanged(nameof(ColumnChartViewModel));
             RaisePropertyChanged(nameof(FileChangeFrequencies));
         }
 
