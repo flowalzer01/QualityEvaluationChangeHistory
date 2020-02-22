@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using QualityEvaluationChangeHistory.BusinessLogic.Data;
 using QualityEvaluationChangeHistory.BusinessLogic.Evaluation;
+using QualityEvaluationChangeHistory.Controls;
 using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         }
 
-        public FileMetricOverTime FileMetricOverTime { get; private set; }
+        public List<FileMetricOverTime> FileMetricsOverTime { get; private set; }
         public ValuesOverTimeViewModel ValuesOverTimeViewModel { get; private set; }
         public ColumnChartViewModel ColumnChartViewModel { get; private set; }
 
@@ -30,10 +31,14 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         internal async Task Init()
         {
-            GitCommits = await Task.Run(() => GetCommits());
-            FileChangeFrequencies = CalculateFileChangeFrequency();
-            FileMetricOverTime = CalculateFileMetricsOverTime();
-            ValuesOverTimeViewModel = new ValuesOverTimeViewModel(FileMetricOverTime);
+            using (LoadingRing loadingRing = LoadingRing.Show("Laden"))
+            {
+                GitCommits = await Task.Run(() => GetCommits());
+                FileChangeFrequencies = await Task.Run(() => CalculateFileChangeFrequency());
+                FileMetricsOverTime = await Task.Run(() => CalculateFileMetricsOverTime());
+            }
+
+            ValuesOverTimeViewModel = new ValuesOverTimeViewModel(FileMetricsOverTime);
             ColumnChartViewModel = new ColumnChartViewModel(FileChangeFrequencies);
             CalculateFileCoupling();
 
@@ -49,13 +54,13 @@ namespace QualityEvaluationChangeHistory.ViewModel
             RaisePropertyChanged(nameof(FileChangeFrequencies));
         }
 
-        private FileMetricOverTime CalculateFileMetricsOverTime()
+        private List<FileMetricOverTime> CalculateFileMetricsOverTime()
         {
             FileMetricOverTimeEvaluator fileMetricOverTimeEvaluator = new FileMetricOverTimeEvaluator();
-            FileMetricOverTime fileMetricOverTime = fileMetricOverTimeEvaluator
-                .GetFileMetricOverTime(GitCommits, FileChangeFrequencies.First().FilePath);
+            List<FileMetricOverTime> fileMetricsOverTime = fileMetricOverTimeEvaluator
+                .GetFileMetricOverTime(GitCommits, FileChangeFrequencies.Take(5).Select(x => x.FilePath));
 
-            return fileMetricOverTime;
+            return fileMetricsOverTime;
         }
 
         private static void WriteCommitsToFileIfNeeded(List<GitCommit> gitCommits)

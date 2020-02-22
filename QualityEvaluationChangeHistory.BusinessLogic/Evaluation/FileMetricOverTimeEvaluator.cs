@@ -12,28 +12,37 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
     public class FileMetricOverTimeEvaluator
     {
-        public FileMetricOverTime GetFileMetricOverTime(List<GitCommit> gitCommits, string filePath)
+        public List<FileMetricOverTime> GetFileMetricOverTime(IEnumerable<GitCommit> gitCommits, IEnumerable<string> filePaths)
         {
-            FileMetricOverTime fileMetricOverTime = new FileMetricOverTime(filePath);
+            List<FileMetricOverTime> fileMetricsOverTime = new List<FileMetricOverTime>();
 
-            foreach (GitCommit gitCommit in gitCommits)
+            foreach(string filePath in filePaths)
             {
-                if (gitCommit.ContainsFileNames(new List<string>() { filePath }))
-                {
-                    SyntaxTree syntaxTree = GetSyntaxTree(GetFileContentForFilePath(filePath, gitCommit));
-                    INamespaceMetric metric = GetFileMetric(syntaxTree);
+                FileMetricOverTime fileMetricOverTime = new FileMetricOverTime(filePath);
 
-                    fileMetricOverTime.FileMetricForCommits.Add(
-                        new FileMetricForCommit(gitCommit.SHA,
-                            gitCommit.Time,
-                            metric.MaintainabilityIndex,
-                            metric.CyclomaticComplexity,
-                            metric.LinesOfCode));
+                foreach (GitCommit gitCommit in gitCommits)
+                {
+                    if (gitCommit.ContainsFileNames(new List<string>() { filePath }))
+                    {
+                        SyntaxTree syntaxTree = GetSyntaxTree(GetFileContentForFilePath(filePath, gitCommit));
+
+                        if (syntaxTree.Length == 0)
+                            continue;
+
+                        INamespaceMetric metric = GetFileMetric(syntaxTree);
+
+                        fileMetricOverTime.FileMetricForCommits.Add(
+                            new FileMetricForCommit(gitCommit.SHA,
+                                gitCommit.Time,
+                                metric.MaintainabilityIndex,
+                                metric.CyclomaticComplexity,
+                                metric.LinesOfCode));
+                    }
                 }
+                fileMetricsOverTime.Add(fileMetricOverTime);
             }
 
-
-            return fileMetricOverTime;
+            return fileMetricsOverTime;
         }
 
         private static INamespaceMetric GetFileMetric(SyntaxTree syntaxTree)

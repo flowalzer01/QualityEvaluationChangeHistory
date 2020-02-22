@@ -6,7 +6,8 @@
         xmlns:control="clr-namespace:QualityEvaluationChangeHistory.Controls"
         mc:Ignorable="d"
         DataContext="{Binding MainPageInstance, Source={StaticResource Locator}}"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
 
     <Grid>
         <Grid.RowDefinitions>
