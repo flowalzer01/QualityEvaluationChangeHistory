@@ -45,8 +45,11 @@
                     </ListView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Details">
+            <TabItem Header="Cyclomatic Complexity over time">
                 <control:ValuesOverTimeChart DataContext="{Binding ValuesOverTimeViewModel}"/>
+            </TabItem>
+            <TabItem Header="File Metrics over File Change Frequency">
+                <view:FileMetricOverFileChangeFrequencyView DataContext="{Binding FileMetricOverFileChangeFrequencyViewModel}"/>
             </TabItem>
         </TabControl>
     </Grid>
