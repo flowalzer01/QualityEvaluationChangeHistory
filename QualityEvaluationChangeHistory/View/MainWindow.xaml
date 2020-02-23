@@ -34,7 +34,7 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
 
-                    <control:ColumnChart Grid.Row="0" DataContext="{Binding ColumnChartViewModel}"/>
+                    <control:FileChangeFrequencyColumnChart Grid.Row="0" DataContext="{Binding FileChangeFrequencyColumnChartViewModel}"/>
                     <ListView Grid.Row="1" Margin="10" Name="lvUsers" ItemsSource="{Binding FileChangeFrequencies}" ScrollViewer.CanContentScroll="True">
                         <ListView.View>
                             <GridView>
@@ -46,7 +46,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Cyclomatic Complexity over time">
-                <control:ValuesOverTimeChart DataContext="{Binding ValuesOverTimeViewModel}"/>
+                <control:FileMetricOverTimeChart DataContext="{Binding FileMetricOverTimeChartViewModel}"/>
             </TabItem>
             <TabItem Header="File Metrics over File Change Frequency">
                 <view:FileMetricOverFileChangeFrequencyView DataContext="{Binding FileMetricOverFileChangeFrequencyViewModel}"/>

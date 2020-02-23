@@ -9,9 +9,9 @@ using System.Text;
 
 namespace QualityEvaluationChangeHistory.ViewModel
 {
-    public class ColumnChartViewModel : ViewModelBase
+    public class FileChangeFrequencyColumnChartViewModel : ViewModelBase
     {
-        public ColumnChartViewModel(List<FileChangeFrequency> fileChangeFrequencies)
+        public FileChangeFrequencyColumnChartViewModel(List<FileChangeFrequency> fileChangeFrequencies)
         {
             SeriesCollection = new SeriesCollection
             {

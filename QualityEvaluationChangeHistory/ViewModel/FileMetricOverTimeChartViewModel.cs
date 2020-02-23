@@ -12,9 +12,9 @@ using System.Windows.Media;
 
 namespace QualityEvaluationChangeHistory.ViewModel
 {
-    public class ValuesOverTimeViewModel : ViewModelBase
+    public class FileMetricOverTimeChartViewModel : ViewModelBase
     {
-        public ValuesOverTimeViewModel(IEnumerable<FileMetricOverTime> fileMetricsOverTime)
+        public FileMetricOverTimeChartViewModel(IEnumerable<FileMetricOverTime> fileMetricsOverTime)
         {
             var dayConfig = Mappers.Xy<DateModel>()
                 .X(dayModel => (double)dayModel.DateTime.Ticks / TimeSpan.FromDays(1).Ticks)

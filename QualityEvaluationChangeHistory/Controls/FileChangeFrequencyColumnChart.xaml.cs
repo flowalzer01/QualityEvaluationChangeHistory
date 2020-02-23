@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace QualityEvaluationChangeHistory.Controls
 {
     /// <summary>
-    /// Interaction logic for ValuesOverTimeChart.xaml
+    /// Interaction logic for ColumnChart.xaml
     /// </summary>
-    public partial class ValuesOverTimeChart : UserControl
+    public partial class FileChangeFrequencyColumnChart : UserControl
     {
-        public ValuesOverTimeChart()
+        public FileChangeFrequencyColumnChart()
         {
             InitializeComponent();
         }

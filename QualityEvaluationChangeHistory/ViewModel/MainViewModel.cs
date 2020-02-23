@@ -24,8 +24,8 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         public List<FileMetricOverTime> FileMetricsOverTime { get; private set; }
         public List<FileMetricOverFileChangeFrequency> FileMetricOverFileChangeFrequencies { get; private set; }
-        public ValuesOverTimeViewModel ValuesOverTimeViewModel { get; private set; }
-        public ColumnChartViewModel ColumnChartViewModel { get; private set; }
+        public FileMetricOverTimeChartViewModel FileMetricOverTimeChartViewModel { get; private set; }
+        public FileChangeFrequencyColumnChartViewModel FileChangeFrequencyColumnChartViewModel { get; private set; }
         public FileMetricOverFileChangeFrequencyViewModel FileMetricOverFileChangeFrequencyViewModel { get; private set; }
         public List<FileChangeFrequency> FileChangeFrequencies { get; private set; }
         public List<GitCommit> GitCommits { get; private set; }
@@ -42,8 +42,8 @@ namespace QualityEvaluationChangeHistory.ViewModel
                 FileMetricsOverTime = await Task.Run(() => CalculateFileMetricsOverTime());
             }
 
-            ValuesOverTimeViewModel = new ValuesOverTimeViewModel(FileMetricsOverTime);
-            ColumnChartViewModel = new ColumnChartViewModel(FileChangeFrequencies);
+            FileMetricOverTimeChartViewModel = new FileMetricOverTimeChartViewModel(FileMetricsOverTime);
+            FileChangeFrequencyColumnChartViewModel = new FileChangeFrequencyColumnChartViewModel(FileChangeFrequencies);
             FileMetricOverFileChangeFrequencyViewModel = new FileMetricOverFileChangeFrequencyViewModel(FileMetricOverFileChangeFrequencies);
             CalculateFileCoupling();
 
@@ -68,9 +68,9 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         private void RefreshUi()
         {
-            RaisePropertyChanged(nameof(ValuesOverTimeViewModel));
-            RaisePropertyChanged(nameof(ColumnChartViewModel));
             RaisePropertyChanged(nameof(FileChangeFrequencies));
+            RaisePropertyChanged(nameof(FileMetricOverTimeChartViewModel));
+            RaisePropertyChanged(nameof(FileChangeFrequencyColumnChartViewModel));
             RaisePropertyChanged(nameof(FileMetricOverFileChangeFrequencyViewModel));
         }
 
