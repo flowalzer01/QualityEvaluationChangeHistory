@@ -24,7 +24,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
                 new ColumnSeries
                 {
                     Title = "Lines changed",
-                    Values = new ChartValues<int> (fileChangeFrequencies.Select(x => x.FileChanges*10)),
+                    Values = new ChartValues<int> (fileChangeFrequencies.Select(x => x.LinesChanged)),
                     ScalesYAt = 1
                 }
             };

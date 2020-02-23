@@ -6,13 +6,18 @@ namespace QualityEvaluationChangeHistory.Model.Model
 {
     public class FileChangeFrequency
     {
-        public FileChangeFrequency(string filePath, int fileChanges)
+        public FileChangeFrequency(string filePath, int fileChanges, int linesAdded, int linesDeleted)
         {
             FilePath = filePath;
             FileChanges = fileChanges;
+            LinesAdded = linesAdded;
+            LinesDeleted = linesDeleted;
         }
 
-        public string FilePath { get; private set; }
-        public int FileChanges { get; private set; }
+        public string FilePath { get; }
+        public int FileChanges { get; set; }
+        public int LinesAdded { get; set; }
+        public int LinesDeleted { get; set; }
+        public int LinesChanged => LinesAdded + LinesDeleted;
     }
 }

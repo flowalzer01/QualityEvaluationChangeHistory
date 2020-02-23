@@ -10,24 +10,26 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 
         public List<FileChangeFrequency> GetFileChangeFrequencies(List<GitCommit> gitCommits)
         {
-            Dictionary<string, int> fileChangeFrequencyDictionary = new Dictionary<string, int>();
-            List<FileChangeFrequency> fileChangeFrequencies = new List<FileChangeFrequency>();
+            Dictionary<string, FileChangeFrequency> fileChangeFrequencyDictionary = new Dictionary<string, FileChangeFrequency>();
 
             foreach (GitCommit gitCommit in gitCommits)
             {
                 foreach (GitPatchEntryChange gitPatchEntryChange in gitCommit.PatchEntryChanges)
                 {
                     if (!fileChangeFrequencyDictionary.ContainsKey(gitPatchEntryChange.Path))
-                        fileChangeFrequencyDictionary[gitPatchEntryChange.Path] = 1;
+                        fileChangeFrequencyDictionary[gitPatchEntryChange.Path] = new FileChangeFrequency(gitPatchEntryChange.Path, 1, gitPatchEntryChange.LinesAdded, gitPatchEntryChange.LinesDeleted);
                     else
-                        fileChangeFrequencyDictionary[gitPatchEntryChange.Path]++;
+                    {
+                        FileChangeFrequency fileChangeFrequency = fileChangeFrequencyDictionary[gitPatchEntryChange.Path];
+                        fileChangeFrequency.FileChanges++;
+                        fileChangeFrequency.LinesAdded += gitPatchEntryChange.LinesAdded;
+                        fileChangeFrequency.LinesDeleted += gitPatchEntryChange.LinesDeleted;
+                    }
                 }
             }
 
-            foreach(var entry in fileChangeFrequencyDictionary)
-                fileChangeFrequencies.Add(new FileChangeFrequency(entry.Key, entry.Value));
-
-            return fileChangeFrequencies
+            return fileChangeFrequencyDictionary
+                .Select(x => x.Value)
                 .OrderByDescending(x => x.FileChanges)
                 .Take(NumberOfFilesToShow)
                 .ToList();
