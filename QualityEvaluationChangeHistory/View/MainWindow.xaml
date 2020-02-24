@@ -28,25 +28,10 @@
                 <view:GeneralInformationView/>
             </TabItem>
             <TabItem Header="File Change Frequency" >
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="2*"/>
-                        <RowDefinition Height="1*"/>
-                    </Grid.RowDefinitions>
-
-                    <control:FileChangeFrequencyColumnChart Grid.Row="0" DataContext="{Binding FileChangeFrequencyColumnChartViewModel}"/>
-                    <ListView Grid.Row="1" Margin="10" Name="lvUsers" ItemsSource="{Binding FileChangeFrequencies}" ScrollViewer.CanContentScroll="True">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="File Path" DisplayMemberBinding="{Binding FilePath}" />
-                                <GridViewColumn Header="File Change Frequency" DisplayMemberBinding="{Binding FileChanges}" />
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
+                <view:FileChangeFrequencyView DataContext="{Binding FileChangeFrequencyViewModel}"/>
             </TabItem>
             <TabItem Header="Cyclomatic Complexity over time">
-                <control:FileMetricOverTimeChart DataContext="{Binding FileMetricOverTimeChartViewModel}"/>
+                <view:FileMetricOverTimeView DataContext="{Binding FileMetricOverTimeViewModel}"/>
             </TabItem>
             <TabItem Header="File Metrics over File Change Frequency">
                 <view:FileMetricOverFileChangeFrequencyView DataContext="{Binding FileMetricOverFileChangeFrequencyViewModel}"/>

@@ -24,12 +24,12 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         public List<FileMetricOverTime> FileMetricsOverTime { get; private set; }
         public List<FileMetricOverFileChangeFrequency> FileMetricOverFileChangeFrequencies { get; private set; }
-        public FileMetricOverTimeChartViewModel FileMetricOverTimeChartViewModel { get; private set; }
-        public FileChangeFrequencyColumnChartViewModel FileChangeFrequencyColumnChartViewModel { get; private set; }
-        public FileMetricOverFileChangeFrequencyViewModel FileMetricOverFileChangeFrequencyViewModel { get; private set; }
         public List<FileChangeFrequency> FileChangeFrequencies { get; private set; }
         public List<GitCommit> GitCommits { get; private set; }
         public List<FileMetric> FileMetricsForSolution { get; private set; }
+        public FileChangeFrequencyViewModel FileChangeFrequencyViewModel { get; private set; }
+        public FileMetricOverTimeViewModel FileMetricOverTimeViewModel { get; private set; }
+        public FileMetricOverFileChangeFrequencyViewModel FileMetricOverFileChangeFrequencyViewModel { get; private set; }
 
         internal async Task Init()
         {
@@ -42,14 +42,20 @@ namespace QualityEvaluationChangeHistory.ViewModel
                 FileMetricsOverTime = await Task.Run(() => CalculateFileMetricsOverTime());
             }
 
-            FileMetricOverTimeChartViewModel = new FileMetricOverTimeChartViewModel(FileMetricsOverTime);
-            FileChangeFrequencyColumnChartViewModel = new FileChangeFrequencyColumnChartViewModel(FileChangeFrequencies);
             FileMetricOverFileChangeFrequencyViewModel = new FileMetricOverFileChangeFrequencyViewModel(FileMetricOverFileChangeFrequencies);
-            CalculateFileCoupling();
+            FileChangeFrequencyViewModel = new FileChangeFrequencyViewModel(FileChangeFrequencies);
+            FileMetricOverTimeViewModel = new FileMetricOverTimeViewModel(FileMetricsOverTime);
 
             WriteCommitsToFileIfNeeded(GitCommits);
 
             RefreshUi();
+        }
+
+        private void RefreshUi()
+        {
+            RaisePropertyChanged(nameof(FileChangeFrequencyViewModel));
+            RaisePropertyChanged(nameof(FileMetricOverTimeViewModel));
+            RaisePropertyChanged(nameof(FileMetricOverFileChangeFrequencyViewModel));
         }
 
         private List<FileMetricOverFileChangeFrequency> CalculateFileMetricOverFileChangeFrequencies()
@@ -64,14 +70,6 @@ namespace QualityEvaluationChangeHistory.ViewModel
             FileMetricForSolutionProvider fileMetricForSolutionProvider = new FileMetricForSolutionProvider();
             return fileMetricForSolutionProvider
                 .GetFileMetrics(@"C:\Users\walzeflo\source\repos\heidelpayDotNET\heidelpayDotNET_Metrics.json");
-        }
-
-        private void RefreshUi()
-        {
-            RaisePropertyChanged(nameof(FileChangeFrequencies));
-            RaisePropertyChanged(nameof(FileMetricOverTimeChartViewModel));
-            RaisePropertyChanged(nameof(FileChangeFrequencyColumnChartViewModel));
-            RaisePropertyChanged(nameof(FileMetricOverFileChangeFrequencyViewModel));
         }
 
         private List<FileMetricOverTime> CalculateFileMetricsOverTime()
