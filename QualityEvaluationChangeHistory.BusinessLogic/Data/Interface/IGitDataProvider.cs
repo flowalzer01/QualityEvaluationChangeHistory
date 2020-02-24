@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory.BusinessLogic.Data
+namespace QualityEvaluationChangeHistory.BusinessLogic.Data.Interface
 {
     public interface IGitDataProvider
     {

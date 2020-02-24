@@ -1,6 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
 using QualityEvaluationChangeHistory.BusinessLogic.Data;
+using QualityEvaluationChangeHistory.BusinessLogic.Data.Interface;
 using QualityEvaluationChangeHistory.BusinessLogic.Evaluation;
+using QualityEvaluationChangeHistory.BusinessLogic.Factory;
+using QualityEvaluationChangeHistory.BusinessLogic.WareHouse;
 using QualityEvaluationChangeHistory.Controls;
 using QualityEvaluationChangeHistory.Model.Model;
 using System;
@@ -12,14 +15,13 @@ namespace QualityEvaluationChangeHistory.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        private const bool DataFromRepository = true;
-        //private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\SAPApps\SapApps_Dsp";
-        private const string RepositoryPath = @"C:\Users\walzeflo\source\repos\heidelpayDotNET";
-        private const string GitDataPath = @"C:\Users\walzeflo\source\repos\BachelorArbeit\DSP\repo.txt";
+        private readonly DataProviderFactory _dataProviderFactory;
+        private readonly WareHouseWriter _wareHouseWriter;
 
         public MainViewModel()
         {
-
+            _dataProviderFactory = new DataProviderFactory(Constants.DataFromWareHouse, Constants.WareHouseProjectPath, Constants.RepositoryPath);
+            _wareHouseWriter = new WareHouseWriter(Constants.WareHousePath, Constants.WareHouseProjectName);
         }
 
         public List<FileMetricOverTime> FileMetricsOverTime { get; private set; }
@@ -33,6 +35,9 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         internal async Task Init()
         {
+            _wareHouseWriter.CreateWareHouseRootFolderIfNeeded();
+            _wareHouseWriter.CreateWareHouseProjectFolderIfNeeded();
+
             using (LoadingRing loadingRing = LoadingRing.Show("Laden"))
             {
                 GitCommits = await Task.Run(() => GetCommits());
@@ -40,15 +45,24 @@ namespace QualityEvaluationChangeHistory.ViewModel
                 FileChangeFrequencies = await Task.Run(() => CalculateFileChangeFrequency());
                 FileMetricOverFileChangeFrequencies = await Task.Run(() => CalculateFileMetricOverFileChangeFrequencies());
                 FileMetricsOverTime = await Task.Run(() => CalculateFileMetricsOverTime());
+
+                WriteToWareHouse();
             }
 
             FileMetricOverFileChangeFrequencyViewModel = new FileMetricOverFileChangeFrequencyViewModel(FileMetricOverFileChangeFrequencies);
             FileChangeFrequencyViewModel = new FileChangeFrequencyViewModel(FileChangeFrequencies);
             FileMetricOverTimeViewModel = new FileMetricOverTimeViewModel(FileMetricsOverTime);
 
-            WriteCommitsToFileIfNeeded(GitCommits);
 
             RefreshUi();
+        }
+
+        private void WriteToWareHouse()
+        {
+            if (!Constants.DataFromWareHouse)
+            {
+                _wareHouseWriter.WriteCommitsToWareHouse(GitCommits);
+            }
         }
 
         private void RefreshUi()
@@ -81,15 +95,6 @@ namespace QualityEvaluationChangeHistory.ViewModel
             return fileMetricsOverTime;
         }
 
-        private static void WriteCommitsToFileIfNeeded(List<GitCommit> gitCommits)
-        {
-            if (DataFromRepository)
-            {
-                GitDataToFileSaver gisDataToFileSaver = new GitDataToFileSaver();
-                gisDataToFileSaver.SaveCommitsToFile(gitCommits, GitDataPath);
-            }
-        }
-
         private void CalculateFileCoupling()
         {
             FileCouplingEvaluator fileCouplingEvaluator = new FileCouplingEvaluator(Constants.FileCouplingCombinationSize, Constants.FileCouplingFilesToLookAt,
@@ -100,11 +105,9 @@ namespace QualityEvaluationChangeHistory.ViewModel
                 .ToList();
         }
 
-        private static List<GitCommit> GetCommits()
+        private List<GitCommit> GetCommits()
         {
-            IGitDataProvider gitDataProvider = new GitDataProviderFactory(RepositoryPath, GitDataPath)
-                .GetGitDataProvider(DataFromRepository);
-
+            IGitDataProvider gitDataProvider = _dataProviderFactory.GetGitDataProvider();
             return gitDataProvider.GetCommits();
         }
 

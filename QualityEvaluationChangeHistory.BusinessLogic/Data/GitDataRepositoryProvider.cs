@@ -1,4 +1,5 @@
 ﻿using LibGit2Sharp;
+using QualityEvaluationChangeHistory.BusinessLogic.Data.Interface;
 using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
