@@ -8,16 +8,18 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
     public class FileCouplingEvaluator
     {
-        private const int COMBINATION_SIZE = 2;
-        private const int TOP_FILES_TO_LOOK_AT = 20;
-
+        private readonly int _combinationSize;
+        private readonly int _topFilesToLookAt;
         private readonly List<GitCommit> _gitCommits;
         private readonly List<FileChangeFrequency> _fileChangeFrequencies;
         private readonly List<string> _fileNames;
         private readonly CombinationEvaluator _combinationEvaluator;
 
-        public FileCouplingEvaluator(List<GitCommit> gitCommits, List<FileChangeFrequency> fileChangeFrequencies)
+        public FileCouplingEvaluator(int combinationSize, int topFilesToLookAt,
+            List<GitCommit> gitCommits, List<FileChangeFrequency> fileChangeFrequencies)
         {
+            _combinationSize = combinationSize;
+            _topFilesToLookAt = topFilesToLookAt;
             _combinationEvaluator = new CombinationEvaluator();
             _gitCommits = gitCommits;
             _fileChangeFrequencies = InitFileChangeFrequencies(fileChangeFrequencies);
@@ -29,7 +31,7 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
         {
             return fileChangeFrequencies
                 .OrderByDescending(x => x.FileChanges)
-                .Take(TOP_FILES_TO_LOOK_AT)
+                .Take(_topFilesToLookAt)
                 .ToList();
         }
 
@@ -75,7 +77,7 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
         private List<List<int>> GetCombinations()
         {
             return _combinationEvaluator
-                            .GetCombinations(_fileNames.Count, COMBINATION_SIZE)
+                            .GetCombinations(_fileNames.Count, _combinationSize)
                             .ToList();
         }
     }

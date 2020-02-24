@@ -92,7 +92,8 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         private void CalculateFileCoupling()
         {
-            FileCouplingEvaluator fileCouplingEvaluator = new FileCouplingEvaluator(GitCommits, FileChangeFrequencies);
+            FileCouplingEvaluator fileCouplingEvaluator = new FileCouplingEvaluator(Constants.FileCouplingCombinationSize, Constants.FileCouplingFilesToLookAt,
+                GitCommits, FileChangeFrequencies);
             List<FileCouple> fileCouples = fileCouplingEvaluator
                 .CalculateFileCouples()
                 .OrderByDescending(x => x.GitCommits.Count)
@@ -109,7 +110,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         private List<FileChangeFrequency> CalculateFileChangeFrequency()
         {
-            FileChangeFrequencyEvaluator fileChangeFrequencyEvaluator = new FileChangeFrequencyEvaluator();
+            FileChangeFrequencyEvaluator fileChangeFrequencyEvaluator = new FileChangeFrequencyEvaluator(Constants.FileChangeFrequencyNumberOfFiles);
 
             return fileChangeFrequencyEvaluator.GetFileChangeFrequencies(GitCommits);
         }
