@@ -1,4 +1,5 @@
-﻿using QualityEvaluationChangeHistory.Model.Model;
+﻿using QualityEvaluationChangeHistory.BusinessLogic.Evaluation.Interface;
+using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
-    public class FileMetricOverFileChangeFrequencyEvaluator
+    public class FileMetricOverFileChangeFrequencyEvaluator : IFileMetricOverFileChangeFrequencyEvaluator
     {
         public List<FileMetricOverFileChangeFrequency> GetFileMetricOverFileChangeFrequencies(List<FileChangeFrequency> fileChangeFrequencies, List<FileMetric> fileMetrics)
         {

@@ -17,8 +17,4 @@
     <ProjectReference Include="..\QualityEvaluationChangeHistory.Model\QualityEvaluationChangeHistory.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="WareHouse\Evaluation\" />
-  </ItemGroup>
-
 </Project>

@@ -1,10 +1,11 @@
-﻿using QualityEvaluationChangeHistory.Model.Model;
+﻿using QualityEvaluationChangeHistory.BusinessLogic.Evaluation.Interface;
+using QualityEvaluationChangeHistory.Model.Model;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
-    public class FileChangeFrequencyEvaluator
+    public class FileChangeFrequencyEvaluator : IFileChangeFrequencyEvaluator
     {
         private readonly int _filesToShow;
 

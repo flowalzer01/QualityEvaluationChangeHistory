@@ -2,6 +2,7 @@
 using ArchiMetrics.Analysis.Common.Metrics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using QualityEvaluationChangeHistory.BusinessLogic.Evaluation.Interface;
 using QualityEvaluationChangeHistory.Model.Model;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
-    public class FileMetricOverTimeEvaluator
+    public class FileMetricOverTimeEvaluator : IFileMetricOverTimeEvaluator
     {
         public List<FileMetricOverTime> GetFileMetricOverTime(IEnumerable<GitCommit> gitCommits, IEnumerable<string> filePaths)
         {

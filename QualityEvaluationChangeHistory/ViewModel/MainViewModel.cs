@@ -2,6 +2,7 @@
 using QualityEvaluationChangeHistory.BusinessLogic.Data;
 using QualityEvaluationChangeHistory.BusinessLogic.Data.Interface;
 using QualityEvaluationChangeHistory.BusinessLogic.Evaluation;
+using QualityEvaluationChangeHistory.BusinessLogic.Evaluation.Interface;
 using QualityEvaluationChangeHistory.BusinessLogic.Factory;
 using QualityEvaluationChangeHistory.BusinessLogic.WareHouse;
 using QualityEvaluationChangeHistory.Controls;
@@ -16,11 +17,13 @@ namespace QualityEvaluationChangeHistory.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private readonly DataProviderFactory _dataProviderFactory;
+        private readonly EvaluatorFactory _evaluatorFactory;
         private readonly WareHouseWriter _wareHouseWriter;
 
         public MainViewModel()
         {
             _dataProviderFactory = new DataProviderFactory(Constants.DataFromWareHouse, Constants.WareHouseProjectPath, Constants.RepositoryPath);
+            _evaluatorFactory = new EvaluatorFactory(Constants.EvaluationDataFromWareHouse, Constants.WareHouseProjectPath);
             _wareHouseWriter = new WareHouseWriter(Constants.WareHousePath, Constants.WareHouseProjectName);
         }
 
@@ -49,10 +52,9 @@ namespace QualityEvaluationChangeHistory.ViewModel
                 WriteToWareHouse();
             }
 
-            FileMetricOverFileChangeFrequencyViewModel = new FileMetricOverFileChangeFrequencyViewModel(FileMetricOverFileChangeFrequencies);
             FileChangeFrequencyViewModel = new FileChangeFrequencyViewModel(FileChangeFrequencies);
             FileMetricOverTimeViewModel = new FileMetricOverTimeViewModel(FileMetricsOverTime);
-
+            FileMetricOverFileChangeFrequencyViewModel = new FileMetricOverFileChangeFrequencyViewModel(FileMetricOverFileChangeFrequencies);
 
             RefreshUi();
         }
@@ -62,6 +64,13 @@ namespace QualityEvaluationChangeHistory.ViewModel
             if (!Constants.DataFromWareHouse)
             {
                 _wareHouseWriter.WriteCommitsToWareHouse(GitCommits);
+            }
+
+            if(!Constants.EvaluationDataFromWareHouse)
+            {
+                _wareHouseWriter.WriteFileChangeFrequenciesToWareHouse(FileChangeFrequencies);
+                _wareHouseWriter.WriteFileMetricOverTimeToWareHouse(FileMetricsOverTime);
+                _wareHouseWriter.WriteFileMetricOverFileChangeFrequencyToWareHouse(FileMetricOverFileChangeFrequencies);
             }
         }
 
@@ -74,7 +83,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         private List<FileMetricOverFileChangeFrequency> CalculateFileMetricOverFileChangeFrequencies()
         {
-            FileMetricOverFileChangeFrequencyEvaluator fileMetricOverFileChangeFrequencyEvaluator = new FileMetricOverFileChangeFrequencyEvaluator();
+            IFileMetricOverFileChangeFrequencyEvaluator fileMetricOverFileChangeFrequencyEvaluator = _evaluatorFactory.GetFileMetricOverFileChangeFrequencyEvaluator();
             return fileMetricOverFileChangeFrequencyEvaluator.
                 GetFileMetricOverFileChangeFrequencies(FileChangeFrequencies, FileMetricsForSolution);
         }
@@ -88,9 +97,9 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         private List<FileMetricOverTime> CalculateFileMetricsOverTime()
         {
-            FileMetricOverTimeEvaluator fileMetricOverTimeEvaluator = new FileMetricOverTimeEvaluator();
+            IFileMetricOverTimeEvaluator fileMetricOverTimeEvaluator = _evaluatorFactory.GetFileMetricOverTimeEvaluator();
             List<FileMetricOverTime> fileMetricsOverTime = fileMetricOverTimeEvaluator
-                .GetFileMetricOverTime(GitCommits, FileChangeFrequencies.Take(5).Select(x => x.FilePath));
+                .GetFileMetricOverTime(GitCommits, FileChangeFrequencies.Take(Constants.FileMetricsOverTimeNumberOfFiles).Select(x => x.FilePath));
 
             return fileMetricsOverTime;
         }
@@ -113,8 +122,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         private List<FileChangeFrequency> CalculateFileChangeFrequency()
         {
-            FileChangeFrequencyEvaluator fileChangeFrequencyEvaluator = new FileChangeFrequencyEvaluator(Constants.FileChangeFrequencyNumberOfFiles);
-
+            IFileChangeFrequencyEvaluator fileChangeFrequencyEvaluator = _evaluatorFactory.GetFileChangeFrequencyEvaluator(Constants.FileChangeFrequencyNumberOfFiles);
             return fileChangeFrequencyEvaluator.GetFileChangeFrequencies(GitCommits);
         }
     }
