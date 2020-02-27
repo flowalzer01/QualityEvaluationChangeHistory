@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QualityEvaluationChangeHistory.BusinessLogic\QualityEvaluationChangeHistory.BusinessLogic.csproj" />
+    <ProjectReference Include="..\QualityEvaluationChangeHistory.Configuration\QualityEvaluationChangeHistory.Configuration.csproj" />
     <ProjectReference Include="..\QualityEvaluationChangeHistory.Model\QualityEvaluationChangeHistory.Model.csproj" />
   </ItemGroup>
 

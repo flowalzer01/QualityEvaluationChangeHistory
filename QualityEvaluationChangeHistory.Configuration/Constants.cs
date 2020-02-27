@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace QualityEvaluationChangeHistory
+namespace QualityEvaluationChangeHistory.Configuration
 {
     public class Constants
     {
@@ -11,7 +11,10 @@ namespace QualityEvaluationChangeHistory
         public const bool EvaluationDataFromWareHouse = true;
         public const string WareHouseProjectName = @"Heidelpay";
         public const string RepositoryPath = @"C:\Users\walzeflo\source\repos\heidelpayDotNET";
+        public static string SolutionPath = @"C:\Users\walzeflo\source\repos\heidelpayDotNET\heidelpayDotNET.sln";
+
         public const string WareHousePath = @"C:\Users\walzeflo\source\repos\WareHouse";
+        public const string FileMetricFileName = "FileMetric.json";
 
         /// <summary>
         /// the following constants are only considerded when evaluation data is not from warehouse

@@ -5,6 +5,7 @@ using QualityEvaluationChangeHistory.BusinessLogic.Evaluation;
 using QualityEvaluationChangeHistory.BusinessLogic.Evaluation.Interface;
 using QualityEvaluationChangeHistory.BusinessLogic.Factory;
 using QualityEvaluationChangeHistory.BusinessLogic.WareHouse;
+using QualityEvaluationChangeHistory.Configuration;
 using QualityEvaluationChangeHistory.Controls;
 using QualityEvaluationChangeHistory.Model.Model;
 using System;
@@ -90,9 +91,8 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         private List<FileMetric> GetFileMetricsForSolution()
         {
-            FileMetricForSolutionProvider fileMetricForSolutionProvider = new FileMetricForSolutionProvider();
-            return fileMetricForSolutionProvider
-                .GetFileMetrics(@"C:\Users\walzeflo\source\repos\heidelpayDotNET\heidelpayDotNET_Metrics.json");
+            FileMetricForSolutionProvider fileMetricForSolutionProvider = new FileMetricForSolutionProvider(Constants.WareHouseProjectPath, Constants.FileMetricFileName);
+            return fileMetricForSolutionProvider.GetFileMetrics();
         }
 
         private List<FileMetricOverTime> CalculateFileMetricsOverTime()
