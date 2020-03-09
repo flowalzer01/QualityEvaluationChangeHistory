@@ -35,18 +35,30 @@ namespace QualityEvaluationChangeHistory.ViewModel
         private IEnumerable<LineSeries> GetLineSeries(IEnumerable<FileMetricOverTime> fileMetricsOverTime)
         {
             List<LineSeries> lineSeriesList = new List<LineSeries>();
-
+            
             foreach(FileMetricOverTime fileMetricOverTime in fileMetricsOverTime)
             {
+                IEnumerable<DateModel> models = GetModels(fileMetricOverTime);
+                if (models.Count() == 0)
+                    continue;
+
                 lineSeriesList.Add(new LineSeries
                 {
-                    Values = new ChartValues<DateModel>(fileMetricOverTime.FileMetricForCommits.Select(x => new DateModel(x.Time, x.CyclomaticComplexity))),
+                    Values = new ChartValues<DateModel>(models),
                     Fill = Brushes.Transparent,
                     Title = fileMetricOverTime.FilePath
                 });
             }
 
             return lineSeriesList;
+        }
+
+        private static IEnumerable<DateModel> GetModels(FileMetricOverTime fileMetricOverTime)
+        {
+            return fileMetricOverTime
+                .FileMetricForCommits
+                .OrderBy(x => x.Time)
+                    .Select(x => new DateModel(x.Time, x.CyclomaticComplexity));
         }
     }
 }

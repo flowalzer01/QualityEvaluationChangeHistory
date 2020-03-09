@@ -45,12 +45,13 @@ namespace QualityEvaluationChangeHistory.ViewModel
             using (LoadingRing loadingRing = LoadingRing.Show("Laden"))
             {
                 GitCommits = await Task.Run(() => GetCommits());
+                await Task.Run(() => WriteDataToWareHouse());
                 FileMetricsForSolution = await Task.Run(() => GetFileMetricsForSolution());
                 FileChangeFrequencies = await Task.Run(() => CalculateFileChangeFrequency());
                 FileMetricOverFileChangeFrequencies = await Task.Run(() => CalculateFileMetricOverFileChangeFrequencies());
                 FileMetricsOverTime = await Task.Run(() => CalculateFileMetricsOverTime());
 
-                WriteToWareHouse();
+                WriteEvaluationDataToWareHouse();
             }
 
             FileChangeFrequencyViewModel = new FileChangeFrequencyViewModel(FileChangeFrequencies);
@@ -60,14 +61,17 @@ namespace QualityEvaluationChangeHistory.ViewModel
             RefreshUi();
         }
 
-        private void WriteToWareHouse()
+        private void WriteDataToWareHouse()
         {
             if (!Constants.DataFromWareHouse)
             {
                 _wareHouseWriter.WriteCommitsToWareHouse(GitCommits);
             }
+        }
 
-            if(!Constants.EvaluationDataFromWareHouse)
+        private void WriteEvaluationDataToWareHouse()
+        {
+            if (!Constants.EvaluationDataFromWareHouse)
             {
                 _wareHouseWriter.WriteFileChangeFrequenciesToWareHouse(FileChangeFrequencies);
                 _wareHouseWriter.WriteFileMetricOverTimeToWareHouse(FileMetricsOverTime);

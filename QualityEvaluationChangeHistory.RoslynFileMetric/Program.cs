@@ -51,27 +51,29 @@ namespace QualityEvaluationChangeHistory.RoslynFileMetric
                             if (metric.MemberMetrics.Select(x => x.CodeFile).Where(x => !string.IsNullOrEmpty(x)).Distinct().Count() > 1)
                                 Console.WriteLine("More than one file name...");
 
-                            string codeFile = metric.
+                            var codeFiles = metric.
                                 MemberMetrics
-                                .FirstOrDefault(x => !string.IsNullOrEmpty(x.CodeFile))?
-                                .CodeFile;
+                                .Where(x => !string.IsNullOrEmpty(x.CodeFile))
+                                .Select(x => x.CodeFile)
+                                .Distinct();
 
-                            if (string.IsNullOrEmpty(codeFile))
-                                continue;
-
-                            Document document = project
-                                .Documents
-                                .SingleOrDefault(x => x.FilePath
-                                .EndsWith(codeFile));
-
-                            if (!fileMetricsDictionary.ContainsKey(document.FilePath))
-                                fileMetricsDictionary[document.FilePath] = GetFileMetric(metric, document.FilePath);
-                            else
+                            foreach (var codeFile in codeFiles)
                             {
-                                Console.WriteLine($"{document.FilePath} already in the dictionary");
-                                PrintMetric(fileMetricsDictionary[document.FilePath]);
-                                PrintMetric(GetFileMetric(metric, document.FilePath));
+                                Document document = project
+                                    .Documents
+                                    .SingleOrDefault(x => x.FilePath
+                                    .EndsWith(codeFile));
+
+                                if (!fileMetricsDictionary.ContainsKey(document.FilePath))
+                                    fileMetricsDictionary[document.FilePath] = GetFileMetric(metric, document.FilePath);
+                                else
+                                {
+                                    Console.WriteLine($"{document.FilePath} already in the dictionary");
+                                    PrintMetric(fileMetricsDictionary[document.FilePath]);
+                                    PrintMetric(GetFileMetric(metric, document.FilePath));
+                                }
                             }
+
                         }
                     }
                 }

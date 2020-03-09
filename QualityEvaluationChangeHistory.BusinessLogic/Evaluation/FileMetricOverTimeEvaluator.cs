@@ -17,7 +17,7 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
         {
             List<FileMetricOverTime> fileMetricsOverTime = new List<FileMetricOverTime>();
 
-            foreach(string filePath in filePaths)
+            foreach (string filePath in filePaths)
             {
                 FileMetricOverTime fileMetricOverTime = new FileMetricOverTime(filePath);
 
@@ -30,8 +30,11 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
                         if (syntaxTree.Length == 0)
                             continue;
 
-                        INamespaceMetric metric = GetFileMetric(syntaxTree);
+                        IEnumerable<INamespaceMetric> metrics = GetFileMetric(syntaxTree);
+                        if (metrics.Count() != 1)
+                            continue;
 
+                        INamespaceMetric metric = metrics.SingleOrDefault();
                         fileMetricOverTime.FileMetricForCommits.Add(
                             new FileMetricForCommit(gitCommit.SHA,
                                 gitCommit.Time,
@@ -46,12 +49,18 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
             return fileMetricsOverTime;
         }
 
-        private static INamespaceMetric GetFileMetric(SyntaxTree syntaxTree)
+        private static IEnumerable<INamespaceMetric> GetFileMetric(SyntaxTree syntaxTree)
         {
             List<SyntaxTree> syntaxTrees = new List<SyntaxTree>() { syntaxTree };
             CodeMetricsCalculator metricsCalculator = new CodeMetricsCalculator();
-            var task = metricsCalculator.Calculate(syntaxTrees);
-            return task.Result.Single();
+            try
+            {
+                return metricsCalculator.Calculate(syntaxTrees).Result;
+            }
+            catch(Exception)
+            {
+                return new List<INamespaceMetric>();
+            }
         }
 
         private SyntaxTree GetSyntaxTree(string text)

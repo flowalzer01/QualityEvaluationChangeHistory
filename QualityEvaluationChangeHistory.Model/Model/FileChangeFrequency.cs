@@ -22,7 +22,7 @@ namespace QualityEvaluationChangeHistory.Model.Model
         }
 
         [DataMember]
-        public string FilePath { get; }
+        public string FilePath { get; set; }
 
         [DataMember]
         public int FileChanges { get; set; }
