@@ -54,7 +54,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
                 WriteEvaluationDataToWareHouse();
             }
 
-            FileChangeFrequencyViewModel = new FileChangeFrequencyViewModel(FileChangeFrequencies);
+            FileChangeFrequencyViewModel = new FileChangeFrequencyViewModel(FileChangeFrequencies, Constants.FileChangeFrequencyNumberOfFiles);
             FileMetricOverTimeViewModel = new FileMetricOverTimeViewModel(FileMetricsOverTime);
             FileMetricOverFileChangeFrequencyViewModel = new FileMetricOverFileChangeFrequencyViewModel(FileMetricOverFileChangeFrequencies);
 
@@ -90,7 +90,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
         {
             IFileMetricOverFileChangeFrequencyEvaluator fileMetricOverFileChangeFrequencyEvaluator = _evaluatorFactory.GetFileMetricOverFileChangeFrequencyEvaluator();
             return fileMetricOverFileChangeFrequencyEvaluator.
-                GetFileMetricOverFileChangeFrequencies(FileChangeFrequencies, FileMetricsForSolution);
+                GetFileMetricOverFileChangeFrequencies(FileChangeFrequencies.Take(Constants.FileChangeFrequencyNumberOfFiles).ToList(), FileMetricsForSolution);
         }
 
         private List<FileMetric> GetFileMetricsForSolution()
@@ -126,7 +126,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
 
         private List<FileChangeFrequency> CalculateFileChangeFrequency()
         {
-            IFileChangeFrequencyEvaluator fileChangeFrequencyEvaluator = _evaluatorFactory.GetFileChangeFrequencyEvaluator(Constants.FileChangeFrequencyNumberOfFiles);
+            IFileChangeFrequencyEvaluator fileChangeFrequencyEvaluator = _evaluatorFactory.GetFileChangeFrequencyEvaluator();
             return fileChangeFrequencyEvaluator.GetFileChangeFrequencies(GitCommits);
         }
     }

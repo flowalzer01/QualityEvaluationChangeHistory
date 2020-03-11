@@ -18,12 +18,12 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Factory
             _wareHouseProjectPath = wareHouseProjectPath;
         }
 
-        public IFileChangeFrequencyEvaluator GetFileChangeFrequencyEvaluator(int _filesToShow)
+        public IFileChangeFrequencyEvaluator GetFileChangeFrequencyEvaluator()
         {
             if (_fromWareHouse)
                 return new FileChangeFrequencyWareHouse(_wareHouseProjectPath);
             else
-                return new FileChangeFrequencyEvaluator(_filesToShow);
+                return new FileChangeFrequencyEvaluator();
         }
 
         public IFileMetricOverTimeEvaluator GetFileMetricOverTimeEvaluator()

@@ -4,19 +4,45 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:control="clr-namespace:QualityEvaluationChangeHistory.Controls"
-             mc:Ignorable="d">
+             xmlns:converter="clr-namespace:QualityEvaluationChangeHistory.Converter"
+             mc:Ignorable="d"
+             >
+    <UserControl.Resources>
+        <converter:IndexConverter x:Key="IndexConverter" />
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <control:FileChangeFrequencyColumnChart Grid.Row="0" DataContext="{Binding FileChangeFrequencyColumnChartViewModel}"/>
-        <ListView Grid.Row="1" Margin="10" Name="lvUsers" ItemsSource="{Binding FileChangeFrequencies}" ScrollViewer.CanContentScroll="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>    
+        
+        <control:FileChangeFrequencyColumnChart Grid.Row="0" Grid.ColumnSpan="2" DataContext="{Binding FileChangeFrequencyColumnChartViewModel}"/>
+
+        <ListView Grid.Row="1" Grid.Column="0" Margin="10" ItemsSource="{Binding FileChanges}" ScrollViewer.CanContentScroll="True">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="No." DisplayMemberBinding="{Binding RelativeSource=
+                        {RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, 
+                        Converter={StaticResource IndexConverter}}"/>
                     <GridViewColumn Header="File Path" DisplayMemberBinding="{Binding FilePath}" />
                     <GridViewColumn Header="File Change Frequency" DisplayMemberBinding="{Binding FileChanges}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView Grid.Row="1" Grid.Column="1" Margin="10" ItemsSource="{Binding LinesChanged}" ScrollViewer.CanContentScroll="True">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="No." DisplayMemberBinding="{Binding RelativeSource=
+                        {RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, 
+                        Converter={StaticResource IndexConverter}}"/>
+                    <GridViewColumn Header="File Path" DisplayMemberBinding="{Binding FilePath}" />
+                    <GridViewColumn Header="Lines Changed" DisplayMemberBinding="{Binding LinesChanged}" />
                 </GridView>
             </ListView.View>
         </ListView>

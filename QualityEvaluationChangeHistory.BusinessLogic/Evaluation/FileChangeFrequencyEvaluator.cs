@@ -7,11 +7,8 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
 {
     public class FileChangeFrequencyEvaluator : IFileChangeFrequencyEvaluator
     {
-        private readonly int _filesToShow;
-
-        public FileChangeFrequencyEvaluator(int filesToShow)
+        public FileChangeFrequencyEvaluator()
         {
-            _filesToShow = filesToShow;
         }
 
         public List<FileChangeFrequency> GetFileChangeFrequencies(List<GitCommit> gitCommits)
@@ -37,7 +34,6 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Evaluation
             return fileChangeFrequencyDictionary
                 .Select(x => x.Value)
                 .OrderByDescending(x => x.FileChanges)
-                .Take(_filesToShow)
                 .ToList();
         }
     }
