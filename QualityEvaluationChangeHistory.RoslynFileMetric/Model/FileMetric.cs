@@ -10,9 +10,10 @@ namespace QualityEvaluationChangeHistory.RoslynFileMetric.Model
     [DataContract]
     public class FileMetric
     {
-        public FileMetric(string filePath, int cyclomaticComplexity, double maintainabilityIndex, int linesOfCode)
+        public FileMetric(string filePath, string name, int cyclomaticComplexity, double maintainabilityIndex, int linesOfCode)
         {
             FilePath = filePath;
+            Name = name;
             CyclomaticComplexity = cyclomaticComplexity;
             MaintainabilityIndex = maintainabilityIndex;
             LinesOfCode = linesOfCode;
@@ -20,6 +21,9 @@ namespace QualityEvaluationChangeHistory.RoslynFileMetric.Model
 
         [DataMember]
         public string FilePath { get; }
+
+        [DataMember]
+        public string Name { get; }
 
         [DataMember]
         public int CyclomaticComplexity { get; }

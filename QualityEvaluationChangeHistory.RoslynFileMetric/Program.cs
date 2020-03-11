@@ -91,7 +91,7 @@ namespace QualityEvaluationChangeHistory.RoslynFileMetric
 
         private static FileMetric GetFileMetric(ITypeMetric metric, string filePath)
         {
-            return new FileMetric(filePath, metric.CyclomaticComplexity, metric.MaintainabilityIndex, metric.LinesOfCode);
+            return new FileMetric(filePath, metric.Name, metric.CyclomaticComplexity, metric.MaintainabilityIndex, metric.LinesOfCode);
         }
     }
 }

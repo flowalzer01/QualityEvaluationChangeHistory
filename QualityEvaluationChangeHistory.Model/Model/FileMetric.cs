@@ -24,6 +24,9 @@ namespace QualityEvaluationChangeHistory.Model.Model
         public string FilePath { get; set; }
 
         [DataMember]
+        public string Name { get; set; }
+
+        [DataMember]
         public int CyclomaticComplexity { get; set; }
 
         [DataMember]

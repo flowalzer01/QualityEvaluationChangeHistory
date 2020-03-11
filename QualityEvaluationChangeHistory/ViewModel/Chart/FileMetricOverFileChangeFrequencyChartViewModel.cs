@@ -21,7 +21,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
             {
                 ScatterSeries scatterSeries = new ScatterSeries()
                 {
-                    Title = fileMetricOverFileChangeFrequency.FileChangeFrequency.FilePath,
+                    Title = GetTitle(fileMetricOverFileChangeFrequency),
                     Values = new ChartValues<ObservablePoint>()
                     {
                         new ObservablePoint(fileMetricOverFileChangeFrequency.FileChangeFrequency.FileChanges,
@@ -33,6 +33,15 @@ namespace QualityEvaluationChangeHistory.ViewModel
             }
 
             RaisePropertyChanged(nameof(SeriesCollection));
+        }
+
+        private static string GetTitle(FileMetricOverFileChangeFrequency fileMetricOverFileChangeFrequency)
+        {
+            string fileMetricClassName = fileMetricOverFileChangeFrequency.FileMetric.Name;
+            if (string.IsNullOrEmpty(fileMetricClassName))
+                fileMetricClassName = "Not found";
+
+            return $"{fileMetricOverFileChangeFrequency.FileChangeFrequency.FilePath},{Environment.NewLine}{fileMetricClassName}";
         }
     }
 }
