@@ -63,6 +63,9 @@ namespace QualityEvaluationChangeHistory.BusinessLogic.Data
         {
             _parsedFiles++;
 
+            if (!fileName.EndsWith(".cs"))
+                return string.Empty;
+
             TreeEntry treeEntry = commit[fileName];
 
             if(treeEntry == null)

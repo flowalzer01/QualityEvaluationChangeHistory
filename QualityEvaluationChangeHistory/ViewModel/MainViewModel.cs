@@ -17,6 +17,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private const string ClassEnding = ".cs";
         private readonly DataProviderFactory _dataProviderFactory;
         private readonly EvaluatorFactory _evaluatorFactory;
         private readonly WareHouseWriter _wareHouseWriter;
@@ -28,7 +29,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
             _wareHouseWriter = new WareHouseWriter(Constants.WareHousePath, Constants.WareHouseProjectName);
         }
 
-        public List<FileMetricOverTime> FileMetricsOverTime { get; private set; }
+        public List<FileMetricOverTime> FileMetricsOverTime { get; private set; } = new List<FileMetricOverTime>();
         public List<FileMetricOverFileChangeFrequency> FileMetricOverFileChangeFrequencies { get; private set; }
         public List<FileChangeFrequency> FileChangeFrequencies { get; private set; }
         public List<GitCommit> GitCommits { get; private set; }
@@ -90,7 +91,7 @@ namespace QualityEvaluationChangeHistory.ViewModel
         {
             IFileMetricOverFileChangeFrequencyEvaluator fileMetricOverFileChangeFrequencyEvaluator = _evaluatorFactory.GetFileMetricOverFileChangeFrequencyEvaluator();
             return fileMetricOverFileChangeFrequencyEvaluator.
-                GetFileMetricOverFileChangeFrequencies(FileChangeFrequencies.Take(Constants.FileChangeFrequencyNumberOfFiles).ToList(), FileMetricsForSolution);
+                GetFileMetricOverFileChangeFrequencies(GetFileChangeFrequenciesForClasses(), FileMetricsForSolution);
         }
 
         private List<FileMetric> GetFileMetricsForSolution()
@@ -103,9 +104,25 @@ namespace QualityEvaluationChangeHistory.ViewModel
         {
             IFileMetricOverTimeEvaluator fileMetricOverTimeEvaluator = _evaluatorFactory.GetFileMetricOverTimeEvaluator();
             List<FileMetricOverTime> fileMetricsOverTime = fileMetricOverTimeEvaluator
-                .GetFileMetricOverTime(GitCommits, FileChangeFrequencies.Take(Constants.FileMetricsOverTimeNumberOfFiles).Select(x => x.FilePath));
+                .GetFileMetricOverTime(GitCommits, GetFilePathsFromClassFiles());
 
             return fileMetricsOverTime;
+        }
+
+        private IEnumerable<string> GetFilePathsFromClassFiles()
+        {
+            return FileChangeFrequencies
+                .Select(x => x.FilePath)
+                .Where(x => x.EndsWith(ClassEnding))
+                .Take(Constants.FileMetricsOverTimeNumberOfFiles);
+        }
+
+        private List<FileChangeFrequency> GetFileChangeFrequenciesForClasses()
+        {
+            return FileChangeFrequencies
+                .Where(x => x.FilePath.EndsWith(ClassEnding))
+                .Take(Constants.FileChangeFrequencyNumberOfFiles)
+                .ToList();
         }
 
         private void CalculateFileCoupling()

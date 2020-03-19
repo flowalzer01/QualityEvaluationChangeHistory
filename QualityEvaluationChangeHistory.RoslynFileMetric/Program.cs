@@ -34,13 +34,14 @@ namespace QualityEvaluationChangeHistory.RoslynFileMetric
         private static async Task<List<FileMetric>> GetFileMetrics()
         {
             Dictionary<string, FileMetric> fileMetricsDictionary = new Dictionary<string, FileMetric>();
-
+            int i = 0;
             using (var workspace = MSBuildWorkspace.Create())
             {
                 Solution solution = await workspace.OpenSolutionAsync(SolutionFilePath);
 
                 foreach (var project in solution.Projects)
                 {
+                    Console.WriteLine($"{Environment.NewLine}-----------Calculate project {++i} {project.Name}----------{Environment.NewLine}");
                     CodeMetricsCalculator metricsCalculator = new CodeMetricsCalculator();
                     IEnumerable<INamespaceMetric> metrics = await metricsCalculator.Calculate(project, solution);
 
